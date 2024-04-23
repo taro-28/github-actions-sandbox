@@ -1,0 +1,13 @@
+name: Test2
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "packages/test2/**"
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run tests
+        run: echo "Running test2"
