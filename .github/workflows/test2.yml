@@ -3,6 +3,8 @@ on:
   pull_request:
     branches:
       - main
+    paths:
+      - "packages/test2/**"
 jobs:
   test:
     runs-on: ubuntu-latest
