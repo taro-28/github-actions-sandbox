@@ -11,3 +11,5 @@ jobs:
     steps:
       - name: Run tests
         run: echo "Running test2"
+      - name: Failure
+        run: exit 1
