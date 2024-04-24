@@ -15,7 +15,7 @@ jobs:
       - id: filter
         name: Check for changes in packages/test2
         run: |
-          echo "::set-output name=test2::$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q 'packages/test2/' && echo 'true' || echo 'false')"
+          echo "::set-output name=test2::$(git diff HEAD~ --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q 'packages/test2/' && echo 'true' || echo 'false')"
 
   build:
     needs: path-check
