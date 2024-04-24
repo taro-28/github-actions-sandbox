@@ -5,23 +5,21 @@ on:
       - main
 jobs:
   path-check:
-    # packages/test2/**'に変更があれば、test jobに進む
     runs-on: ubuntu-latest
+    outputs:
+      changes_in_test2: ${{ steps.filter.outputs.test2 }}
     steps:
-      - name: Check path
+      - uses: actions/checkout@v3
+      - id: filter
+        name: Check for changes in packages/test2
         run: |
-          echo "Checking path"
-          if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q "packages/test2/"; then
-            echo "Path has changed"
-          else
-            echo "Path has not changed"
-            exit 1
-          fi
-  test:
-    runs-on: ubuntu-latest
+          echo "::set-output name=test2::$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q 'packages/test2/' && echo 'true' || echo 'false')"
+
+  build:
     needs: path-check
+    runs-on: ubuntu-latest
+    if: needs.path-check.outputs.changes_in_test2 == 'true'
     steps:
-      - name: Run tests
-        run: echo "Running test2"
-      - name: Failure
-        run: exit 1
+      - uses: actions/checkout@v2
+      - name: Build
+        run: echo "Building because changes were detected in packages/test2/"
