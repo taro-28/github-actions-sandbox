@@ -4,24 +4,14 @@ on:
     branches:
       - main
 jobs:
-  path-check:
+  build:
     runs-on: ubuntu-latest
-    outputs:
-      changes_in_test2: ${{ steps.filter.outputs.test2 }}
     steps:
       - uses: actions/checkout@v3
-        with:
-          fetch-depth: 2
-      - id: filter
+      - id: path-check
         name: Check for changes in packages/test2
-        run: |
-          echo "::set-output name=test2::$(git diff HEAD~ --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q 'packages/test2/' && echo 'true' || echo 'false')"
-
-  build:
-    needs: path-check
-    runs-on: ubuntu-latest
-    if: needs.path-check.outputs.changes_in_test2 == 'true'
-    steps:
-      - uses: actions/checkout@v2
+        run: echo "::set-output name=changed::$(git diff HEAD~ --name-only --relative=packages/test2 | wc -l)"
+      - if: ${{ steps.path-check.outputs.changed != '0' }}
+        run: exit 0
       - name: Build
         run: echo "Building because changes were detected in packages/test2/"
