@@ -10,6 +10,8 @@ jobs:
       changes_in_test2: ${{ steps.filter.outputs.test2 }}
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 2
       - id: filter
         name: Check for changes in packages/test2
         run: |
